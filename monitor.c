@@ -4,6 +4,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/times.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <signal.h>
 #include <string.h>
@@ -36,8 +38,9 @@ int main(int argc, char *argv[]) {
 			
 			// child process
 			printf("Child Process.\n");
+			printf("-----\n");
 
-			printf("Process with id: %d created for the command: %s\n", getpid(), argv[current_proc_idx]);
+			printf("Process with id: %d created for the command: %s\n\n", getpid(), argv[current_proc_idx]);
 
 			execvp(argv[current_proc_idx], &argv[current_proc_idx]);
 
@@ -49,7 +52,9 @@ int main(int argc, char *argv[]) {
 		else {
 
 			// parent process: monitor
-			printf("Parent Process Start.\n");
+			printf("Parent Process.\n");
+			printf("-----.\n");
+			printf("-----.\n");
 
 			// Let monitor ignore incoming interrupt-signals
 			// Will not work on SIGKILL and SIGSTOP
@@ -58,10 +63,10 @@ int main(int argc, char *argv[]) {
 			}
 
 			struct timespec r_start, r_stop;
-
+			struct rusage usage;
 			int status;
 			clock_gettime(CLOCK_MONOTONIC, &r_start);
-			waitpid(pid, &status, 0);
+			wait4(pid, &status, 0, &usage);
 			clock_gettime(CLOCK_MONOTONIC, &r_stop);
 
 			// cannot be started 
@@ -78,10 +83,15 @@ int main(int argc, char *argv[]) {
 			}
 			
 			// http://www.qnx.com/developers/docs/6.5.0/index.jsp?topic=%2Fcom.qnx.doc.neutrino_lib_ref%2Fc%2Fclock_gettime.html
-			double realtime = (r_stop.tv_sec-r_start.tv_sec) + (double)(r_stop.tv_nsec - r_start.tv_nsec) / (double)BILLION;
+			double real_time = (r_stop.tv_sec-r_start.tv_sec) + (double)(r_stop.tv_nsec - r_start.tv_nsec) / (double)BILLION;
+			double user_time = (double) usage.ru_utime.tv_sec + (double) usage.ru_utime.tv_usec * 0.000001;
+			double sys_time = (double) usage.ru_stime.tv_sec + (double) usage.ru_stime.tv_usec * 0.000001;
+			int pg_faults = (int) usage.ru_minflt + (int) usage.ru_majflt;  
+			int ctxt_switches = (int) usage.ru_nvcsw + (int) usage.ru_nivcsw;  
 
-			// printf("real: %.3f s, user: %.3f s, system: %.3f s\n", realtime, usertime, systime);
-			printf("\nreal: %.3f s, user: %.3f s, system: %.3f s\n", realtime, 0.0, 0.0);
+			printf("\nreal: %.3f s, user: %.3f s, system: %.3f s\n", real_time, user_time, sys_time);
+			printf("no. of page faults: %d\n", pg_faults);
+			printf("no. of context switches: %d\n", ctxt_switches);
 			
 			printf("Parent Process End.\n");
 			printf("\n");
