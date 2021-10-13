@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 			}
 			
 			// http://www.qnx.com/developers/docs/6.5.0/index.jsp?topic=%2Fcom.qnx.doc.neutrino_lib_ref%2Fc%2Fclock_gettime.html
-			double real_time = (r_stop.tv_sec-r_start.tv_sec) + (double)(r_stop.tv_nsec - r_start.tv_nsec) / (double)BILLION;
+			double real_time = (r_stop.tv_sec-r_start.tv_sec) + (double)(r_stop.tv_nsec - r_start.tv_nsec) * 0.000000001;
 			double user_time = (double) usage.ru_utime.tv_sec + (double) usage.ru_utime.tv_usec * 0.000001;
 			double sys_time = (double) usage.ru_stime.tv_sec + (double) usage.ru_stime.tv_usec * 0.000001;
 			int pg_faults = (int) usage.ru_minflt + (int) usage.ru_majflt;  
@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
 			printf("no. of page faults: %d\n", pg_faults);
 			printf("no. of context switches: %d\n", ctxt_switches);
 			
+			printf("-----.\n");
 			printf("Parent Process End.\n");
 			printf("\n");
 
