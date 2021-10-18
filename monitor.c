@@ -1,3 +1,7 @@
+// Filename: monitor_3035552777.c
+// Student name: Bevan Varghese
+// Student number: 3035552777
+// Development platform: WSL (Ubuntu) on Windows 10
 /* Remark: All the requirements have been completed. There was no specification mentioning 
 that the final output of the command should be printed on the terminal or not. I have 
 assumed that the final output should be printed on the terminal. Hence, with one child 
@@ -35,7 +39,7 @@ int main(int argc, char *argv[]) {
 			if(argv[i][0]=='!') {
 				num_children++;
 			}
-		{
+		}
 
 		// 2 cases:
 		// (i) pipes not required
