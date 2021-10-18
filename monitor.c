@@ -1,7 +1,7 @@
-// Remark: All the requirements have been completed. There was no specification mentioning 
-// that the final output of the command should be printed on the terminal or not. I have 
-// assumed that the final output should be printed on the terminal. Hence, with one child 
-// process invoked, the output is printed. When pipes are used, the final output is printed.
+/* Remark: All the requirements have been completed. There was no specification mentioning 
+that the final output of the command should be printed on the terminal or not. I have 
+assumed that the final output should be printed on the terminal. Hence, with one child 
+process invoked, the output is printed. When pipes are used, the final output is printed. */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,11 +31,11 @@ int main(int argc, char *argv[]) {
 		// count number of child processes required
 		int num_children = 1;
 		for (int i = 1; i < argc; i++)
-    {
+		{
 			if(argv[i][0]=='!') {
 				num_children++;
-			} 
-    }
+			}
+		{
 
 		// 2 cases:
 		// (i) pipes not required
